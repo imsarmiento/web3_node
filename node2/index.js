@@ -52,7 +52,7 @@ const getHTMLClientes = (callback) => {
           "</tr>"
         );
       });
-      data.splice(data.indexOf("<tr></tr>"), 1, htmlClientes);
+      data.splice(data.indexOf("<tr></tr>"), 1, ...htmlClientes);
       var text = data.join("\n");
       //console.log(text);
       callback(text);
@@ -70,7 +70,7 @@ const getHTMLProveedores = (callback) => {
     getProveedores((proveedores) => {
       var htmlProveedores = [];
       proveedores.forEach((proveedor) => {
-        console.log(proveedor);
+        //console.log(proveedor);
         htmlProveedores.push(
           "<tr>",
           "<th scope='row'>" + proveedor.idproveedor + "</th>",
@@ -79,9 +79,11 @@ const getHTMLProveedores = (callback) => {
           "</tr>"
         );
       });
-      data.splice(data.indexOf("<tr></tr>"), 1, htmlProveedores);
+      data.splice(data.indexOf("<tr></tr>"), 1, ...htmlProveedores);
+      console.log(data);
       var text = data.join("\n");
       //console.log(text);
+      //fs.writeFile("prueba.html", text, (err) => console.log(err));
       callback(text);
     });
   });
@@ -90,15 +92,9 @@ const getHTMLProveedores = (callback) => {
 http
   .createServer((req, res) => {
     if (req.url === "/api/proveedores") {
-      getHTMLProveedores((data) => {
-        console.log("data", data);
-        return res.end(data);
-      });
+      getHTMLProveedores((data) => res.end(data));
     } else if (req.url === "/api/clientes") {
-      getHTMLClientes((data) => {
-        console.log("data", data);
-        return res.end(data);
-      });
+      getHTMLClientes((data) => res.end(data));
     }
   })
   .listen(8081);
